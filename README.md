@@ -75,3 +75,4 @@ Arquitetura para e-commerce com foco em:
 
 - `challenge.eraserdiagram`: fonte editavel do desenho logico.
 - `challenge.drawio`: arquivo final para abertura/edicao no draw.io.
+- Download do projeto (Google Drive): https://drive.google.com/drive/folders/17sTbz-0OjhLHAhetuK8Jh3NXORNEOcHv?usp=drive_link
