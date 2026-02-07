@@ -16,27 +16,27 @@ VPC Principal [icon: aws-vpc, color: blue] {
   // Zona de Disponibilidade A
   AZ A [icon: aws-availability-zone, color: green, label: "Availability Zone A"] {
     Private Subnet A [icon: aws-vpc, label: "Private Subnet A"] {
-      EC2 Linux A [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+      EC2 Linux A [icon: aws-ec2, label: "EC2 Linux VM A (ASG instances)"]
     }
     DB Subnet A [icon: aws-vpc, label: "DB Subnet A"] {
-      RDS Primary [icon: aws-rds, label: "RDS Multi-AZ Primary (HA)"]
+      RDS Primary [icon: aws-rds, label: "RDS Multi-AZ Primary (PaaS/HA)"]
     }
   }
 
   // Zona de Disponibilidade B
   AZ B [icon: aws-availability-zone, color: green, label: "Availability Zone B"] {
     Private Subnet B [icon: aws-vpc, label: "Private Subnet B"] {
-      EC2 Linux B [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+      EC2 Linux B [icon: aws-ec2, label: "EC2 Linux VM B (ASG instances)"]
     }
     DB Subnet B [icon: aws-vpc, label: "DB Subnet B"] {
-      RDS Standby [icon: aws-rds, label: "RDS Multi-AZ Standby (HA)"]
+      RDS Standby [icon: aws-rds, label: "RDS Multi-AZ Standby (PaaS/HA)"]
     }
   }
 
   // Zona de Disponibilidade C
   AZ C [icon: aws-availability-zone, color: green, label: "Availability Zone C"] {
     Private Subnet C [icon: aws-vpc, label: "Private Subnet C"] {
-      EC2 Linux C [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+      EC2 Linux C [icon: aws-ec2, label: "EC2 Linux VM C (ASG instances)"]
     }
     DB Subnet C [icon: aws-vpc, label: "DB Subnet C"]
   }
