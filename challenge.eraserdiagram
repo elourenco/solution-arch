@@ -1,0 +1,94 @@
+cloud-architecture-diagram
+
+title Arquitetura de Alta Disponibilidade - E-commerce AWS
+
+Usuarios [icon: users]
+
+IAM [icon: aws-iam, label: "IAM Roles (RDS IAM Auth)"]
+Security Groups [icon: aws-security-group, label: "Security Groups (Firewall)"]
+
+VPC Principal [icon: aws-vpc, color: blue] {
+
+  Public Subnets [icon: aws-vpc, label: "Public Subnets (A/B/C)"] {
+    ALB [icon: aws-elb, label: "Application Load Balancer"]
+  }
+
+  // Zona de Disponibilidade A
+  AZ A [icon: aws-availability-zone, color: green, label: "Availability Zone A"] {
+    Private Subnet A [icon: aws-vpc, label: "Private Subnet A"] {
+      EC2 Linux A [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+    }
+    DB Subnet A [icon: aws-vpc, label: "DB Subnet A"] {
+      RDS Primary [icon: aws-rds, label: "RDS Multi-AZ Primary (HA)"]
+    }
+  }
+
+  // Zona de Disponibilidade B
+  AZ B [icon: aws-availability-zone, color: green, label: "Availability Zone B"] {
+    Private Subnet B [icon: aws-vpc, label: "Private Subnet B"] {
+      EC2 Linux B [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+    }
+    DB Subnet B [icon: aws-vpc, label: "DB Subnet B"] {
+      RDS Standby [icon: aws-rds, label: "RDS Multi-AZ Standby (HA)"]
+    }
+  }
+
+  // Zona de Disponibilidade C
+  AZ C [icon: aws-availability-zone, color: green, label: "Availability Zone C"] {
+    Private Subnet C [icon: aws-vpc, label: "Private Subnet C"] {
+      EC2 Linux C [icon: aws-ec2, label: "EC2 Linux (ASG instances)"]
+    }
+    DB Subnet C [icon: aws-vpc, label: "DB Subnet C"]
+  }
+
+  Auto Scaling Group [icon: aws-ec2-auto-scaling, label: "Auto Scaling Group (Min: 3, Max: 6, Linux)"]
+  RDS Subnet Group [icon: aws-rds, label: "RDS Subnet Group (A/B/C, Multi-AZ)"]
+}
+
+Regiao Secundaria [icon: aws-vpc, color: gray, label: "Região Secundária (VPC)"] {
+  RDS Read Replica [icon: aws-rds, label: "RDS Read Replica (Cross-Region DR)"]
+}
+
+Backups Automaticos [icon: aws-backup, label: "Backups Automáticos (Retenção/DR)"]
+CloudWatch [icon: aws-cloudwatch, label: "CloudWatch (Logs/Métricas/Alarmes)"]
+
+// Conexões
+Usuarios > ALB: Tráfego de Usuários
+ALB > EC2 Linux A: Target Group (Distribuição de Carga)
+ALB > EC2 Linux B: Target Group (Distribuição de Carga)
+ALB > EC2 Linux C: Target Group (Distribuição de Carga)
+
+Auto Scaling Group --> EC2 Linux A: Provisionamento/Escala
+Auto Scaling Group --> EC2 Linux B: Provisionamento/Escala
+Auto Scaling Group --> EC2 Linux C: Provisionamento/Escala
+
+IAM --> EC2 Linux A: Permissões IAM (Leitura/Escrita DB)
+IAM --> EC2 Linux B: Permissões IAM (Leitura/Escrita DB)
+IAM --> EC2 Linux C: Permissões IAM (Leitura/Escrita DB)
+IAM --> RDS Primary: Autenticação IAM (DB)
+
+Security Groups --> ALB: Inbound 443 (Origens Autorizadas)
+Security Groups --> EC2 Linux A: Inbound somente do ALB
+Security Groups --> EC2 Linux B: Inbound somente do ALB
+Security Groups --> EC2 Linux C: Inbound somente do ALB
+Security Groups --> RDS Primary: Inbound somente das EC2
+Security Groups --> RDS Standby: Inbound somente das EC2
+
+RDS Subnet Group --> DB Subnet A: Subnet Group
+RDS Subnet Group --> DB Subnet B: Subnet Group
+RDS Subnet Group --> DB Subnet C: Subnet Group
+
+CloudWatch --> ALB: Logs/Métricas
+CloudWatch --> EC2 Linux A: Logs/Métricas
+CloudWatch --> EC2 Linux B: Logs/Métricas
+CloudWatch --> EC2 Linux C: Logs/Métricas
+CloudWatch --> RDS Primary: Logs/Métricas
+CloudWatch --> RDS Standby: Logs/Métricas
+
+EC2 Linux A --> RDS Primary: Read/Write
+EC2 Linux B --> RDS Primary: Read/Write
+EC2 Linux C --> RDS Primary: Read/Write
+RDS Primary --> RDS Standby: Replicação Síncrona (Failover)
+RDS Standby --> RDS Primary: Failover Automático
+RDS Primary --> RDS Read Replica: Replicação Cross-Region (DR)
+RDS Primary --> Backups Automaticos: Backups Automáticos
